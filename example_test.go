@@ -11,7 +11,62 @@ import (
 	"github.com/chai2010/jsonmap"
 )
 
-func Example() {
+func Example_structToMapString() {
+	// https://github.com/chai2010/diffbot-go-client/blob/master/article.go
+
+	type Image struct {
+		Url         string `json:"url"`
+		PixelHeight int    `json:"pixelHeight"`
+		PixelWidth  int    `json:"pixelWidth"`
+	}
+	type Article struct {
+		Url   string                 `json:"url"`
+		Meta  map[string]interface{} `json:"meta,omitempty"` // Returned with fields.
+		Tags  string                 `json:"tags,omitempty"` // Returned with fields.
+		Image Image                  `json:"image"`
+	}
+
+	article := Article{
+		Url: "https://github.com/chai2010",
+		Meta: map[string]interface{}{
+			"c": 123,
+			"d": 3.14,
+			"e": true,
+		},
+		Tags: "aa,bb",
+		Image: Image{
+			Url:         "a.png",
+			PixelHeight: 100,
+			PixelWidth:  200,
+		},
+	}
+
+	var jsonMap = jsonmap.NewJsonMapFromStruct(article)
+
+	m := jsonMap.ToMapString("/")
+
+	var keys []string
+	for k := range m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for _, k := range keys {
+		fmt.Println("/article"+k, m[k])
+	}
+
+	// Output:
+	// /article/image/pixelHeight 100
+	// /article/image/pixelWidth 200
+	// /article/image/url a.png
+	// /article/meta/c 123
+	// /article/meta/d 3.14
+	// /article/meta/e true
+	// /article/tags aa,bb
+	// /article/url https://github.com/chai2010
+}
+
+func Example_toMapString() {
 	var jsonMap = jsonmap.JsonMap{
 		"a": map[string]interface{}{
 			"sub-a": "value-sub-a",
