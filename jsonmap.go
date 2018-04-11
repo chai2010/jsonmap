@@ -159,6 +159,9 @@ func (m JsonMap) ToStruct(output interface{}) error {
 func (m JsonMap) ToMapString(keySep string) map[string]string {
 	return unpackMapXToMapString(m, keySep)
 }
+func (m JsonMap) ToFlatMap(keySep string) map[string]interface{} {
+	return unpackMapXToFlatMap(m, keySep)
+}
 
 // X is oneof string/float64/[]interface/map[string]interface{}
 func unpackMapXToMapString(mapx map[string]interface{}, keySep string) map[string]string {
@@ -203,6 +206,58 @@ func unpackMapXToMapString(mapx map[string]interface{}, keySep string) map[strin
 			}
 		case JsonMap:
 			for kk, vv := range unpackMapXToMapString(v, keySep) {
+				m[keySep+k+kk] = vv
+			}
+		default:
+			// unreachable
+		}
+	}
+	return m
+}
+
+// X is oneof string/float64/[]interface/map[string]interface{}
+func unpackMapXToFlatMap(mapx map[string]interface{}, keySep string) map[string]interface{} {
+	var m = map[string]interface{}{}
+	for k, v := range mapx {
+		switch v := v.(type) {
+		case string:
+			m[keySep+k] = v
+		case float32:
+			m[keySep+k] = float64(v)
+		case float64:
+			m[keySep+k] = v
+		case int:
+			m[keySep+k] = v
+		case bool:
+			m[keySep+k] = v
+		case []interface{}:
+			for i := 0; i < len(v); i++ {
+				ki := k + keySep + strconv.Itoa(i+1)
+				switch vi := v[i].(type) {
+				case string:
+					m[ki] = vi
+				case float32:
+					m[keySep+k] = float64(vi)
+				case float64:
+					m[keySep+k] = vi
+				case int:
+					m[keySep+k] = vi
+				case bool:
+					m[keySep+k] = vi
+				case map[string]interface{}:
+					for kk, vv := range unpackMapXToFlatMap(vi, keySep) {
+						m[ki+keySep+kk] = vv
+					}
+				default:
+					// unreachable
+				}
+			}
+		case map[string]interface{}:
+			for kk, vv := range unpackMapXToFlatMap(v, keySep) {
+				m[keySep+k+kk] = vv
+			}
+		case JsonMap:
+			for kk, vv := range unpackMapXToFlatMap(v, keySep) {
 				m[keySep+k+kk] = vv
 			}
 		default:
