@@ -11,6 +11,42 @@ import (
 	"github.com/chai2010/jsonmap"
 )
 
+func Example_setAndGet() {
+	var jsonMap = jsonmap.JsonMap{
+		"a": map[string]interface{}{
+			"b": map[string]interface{}{
+				"c": "value-abc",
+			},
+		},
+	}
+
+	jsonMap.SetValue("value-xyz", "x", "y", "z")
+
+	v1, ok1 := jsonMap.GetValue("a", "b", "c")
+	fmt.Println(v1, ok1)
+
+	v2, ok2 := jsonMap.GetValue("x", "y", "z")
+	fmt.Println(v2, ok2)
+
+	v3, ok3 := jsonMap.GetValue("1", "2", "3")
+	fmt.Println(v3, ok3)
+
+	// replace x/y/z with x/y
+	jsonMap.SetValue("value-xy", "x", "y")
+
+	v4, ok4 := jsonMap.GetValue("x", "y", "z")
+	fmt.Println(v4, ok4)
+	v5, ok5 := jsonMap.GetValue("x", "y")
+	fmt.Println(v5, ok5)
+
+	// Output:
+	// value-abc true
+	// value-xyz true
+	// <nil> false
+	// <nil> false
+	// value-xy true
+}
+
 func Example_structToMapString() {
 	// https://github.com/chai2010/diffbot-go-client/blob/master/article.go
 

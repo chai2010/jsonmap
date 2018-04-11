@@ -43,11 +43,21 @@ func (m JsonMap) GetValue(key string, subKeys ...string) (value interface{}, ok 
 	)
 
 	for _, prefixKey := range prefixKeys {
-		if subMap, _ := curMap[prefixKey].(JsonMap); subMap == nil {
+		if subMap, _ := curMap[prefixKey]; subMap == nil {
 			return nil, false
 		}
 
-		curMap = curMap[prefixKey].(JsonMap)
+		if subMap, _ := curMap[prefixKey].(map[string]interface{}); subMap != nil {
+			curMap = subMap
+			continue
+		}
+
+		if subMap, _ := curMap[prefixKey].(JsonMap); subMap != nil {
+			curMap = subMap
+			continue
+		}
+
+		return nil, false
 	}
 
 	lastKey := subKeys[len(subKeys)-1]
