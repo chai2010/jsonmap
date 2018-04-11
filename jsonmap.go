@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// Package jsonmpa provides map for Json/Struct/Key-Value-Database.
 package jsonmap
 
 import (
@@ -19,7 +20,7 @@ func NewJsonMap() JsonMap {
 	return make(JsonMap)
 }
 
-func NewJsonMapFromKV(values map[string]string, keySep string) JsonMap {
+func NewJsonMapFromKV(values map[string]interface{}, keySep string) JsonMap {
 	m := make(JsonMap)
 	m.SetValuesFromKV(values, keySep)
 	return m
@@ -65,7 +66,7 @@ func (m JsonMap) GetValue(key string, subKeys ...string) (value interface{}, ok 
 	return
 }
 
-func (m JsonMap) SetValue(value string, key string, subKeys ...string) {
+func (m JsonMap) SetValue(value interface{}, key string, subKeys ...string) {
 	if len(subKeys) == 0 {
 		m[key] = value
 		return
@@ -136,7 +137,7 @@ func (m JsonMap) SetValuesFromStruct(v interface{}) {
 	x.FillMap(m)
 }
 
-func (m JsonMap) SetValuesFromKV(values map[string]string, keySep string) {
+func (m JsonMap) SetValuesFromKV(values map[string]interface{}, keySep string) {
 	if keySep == "" {
 		for k, v := range values {
 			m[k] = v
