@@ -1,6 +1,7 @@
-# Json Map
+# Map for Json/Struct/Key-Value-Database
 
 [![Build Status](https://travis-ci.org/chai2010/jsonmap.svg)](https://travis-ci.org/chai2010/jsonmap)
+[![Go Report Card](https://goreportcard.com/badge/github.com/chai2010/jsonmap)](https://goreportcard.com/report/github.com/chai2010/jsonmap)
 [![GoDoc](https://godoc.org/github.com/chai2010/jsonmap?status.svg)](https://godoc.org/github.com/chai2010/jsonmap)
 
 ## Install
