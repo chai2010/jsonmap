@@ -136,17 +136,23 @@ func (m JsonMap) ToStruct(output interface{}) error {
 }
 
 func (m JsonMap) ToMapString(keySep string) map[string]string {
-	return m.unpackMapXToMapString(m, keySep)
+	return unpackMapXToMapString(m, keySep)
 }
 
 // X is oneof string/float64/[]interface/map[string]interface{}
-func (p JsonMap) unpackMapXToMapString(mapx map[string]interface{}, keySep string) map[string]string {
+func unpackMapXToMapString(mapx map[string]interface{}, keySep string) map[string]string {
 	var m = map[string]string{}
 	for k, v := range mapx {
 		switch v := v.(type) {
 		case string:
 			m[keySep+k] = v
+		case float32:
+			m[keySep+k] = fmt.Sprintf("%v", v)
 		case float64:
+			m[keySep+k] = fmt.Sprintf("%v", v)
+		case int:
+			m[keySep+k] = fmt.Sprintf("%v", v)
+		case bool:
 			m[keySep+k] = fmt.Sprintf("%v", v)
 		case []interface{}:
 			for i := 0; i < len(v); i++ {
@@ -154,10 +160,16 @@ func (p JsonMap) unpackMapXToMapString(mapx map[string]interface{}, keySep strin
 				switch vi := v[i].(type) {
 				case string:
 					m[ki] = vi
+				case float32:
+					m[ki] = fmt.Sprintf("%v", vi)
 				case float64:
 					m[ki] = fmt.Sprintf("%v", vi)
+				case int:
+					m[ki] = fmt.Sprintf("%v", vi)
+				case bool:
+					m[ki] = fmt.Sprintf("%v", vi)
 				case map[string]interface{}:
-					for kk, vv := range p.unpackMapXToMapString(vi, keySep) {
+					for kk, vv := range unpackMapXToMapString(vi, keySep) {
 						m[ki+keySep+kk] = vv
 					}
 				default:
@@ -165,7 +177,11 @@ func (p JsonMap) unpackMapXToMapString(mapx map[string]interface{}, keySep strin
 				}
 			}
 		case map[string]interface{}:
-			for kk, vv := range p.unpackMapXToMapString(v, keySep) {
+			for kk, vv := range unpackMapXToMapString(v, keySep) {
+				m[keySep+k+kk] = vv
+			}
+		case JsonMap:
+			for kk, vv := range unpackMapXToMapString(v, keySep) {
 				m[keySep+k+kk] = vv
 			}
 		default:

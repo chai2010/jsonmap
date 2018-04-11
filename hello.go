@@ -1,16 +1,9 @@
-# Json Map
+// Copyright 2018 <chaishushan{AT}gmail.com>. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
 
-[![Build Status](https://travis-ci.org/chai2010/jsonmap.svg)](https://travis-ci.org/chai2010/jsonmap)
-[![GoDoc](https://godoc.org/github.com/chai2010/jsonmap?status.svg)](https://godoc.org/github.com/chai2010/jsonmap)
+// +build ignore
 
-## Install
-
-1. `go get github.com/chai2010/jsonmap`
-2. `go run hello.go`
-
-## Example
-
-```go
 package main
 
 import (
@@ -74,10 +67,3 @@ func main() {
 	// /x/e true
 	// /x/z/zz value-zz
 }
-```
-
-## BUGS
-
-Report bugs to <chaishushan@gmail.com>.
-
-Thanks!
