@@ -69,7 +69,20 @@ func (m JsonMap) SetValue(value string, key string, subKeys ...string) {
 	return
 }
 
-func (m JsonMap) DelValues(key string, subKeys ...string) {
+func (m JsonMap) DelValues(keys ...[]string) {
+	for _, key := range keys {
+		switch {
+		case len(key) == 1:
+			m.DelValue(key[0])
+		case len(key) > 1:
+			m.DelValue(key[0], key[1:]...)
+		default:
+			// skip empty key
+		}
+	}
+}
+
+func (m JsonMap) DelValue(key string, subKeys ...string) {
 	if len(subKeys) == 0 {
 		delete(m, key)
 		return
