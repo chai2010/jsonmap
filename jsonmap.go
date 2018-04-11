@@ -32,16 +32,26 @@ func NewJsonMapFromStruct(v interface{}) JsonMap {
 }
 
 func (m JsonMap) GetValue(key string, subKeys ...string) (value interface{}, ok bool) {
-	if value, ok = m[key]; !ok {
+	if len(subKeys) == 0 {
+		value, ok = m[key]
 		return
 	}
 
-	for _, key := range subKeys {
-		if value, ok = m[key]; !ok {
-			return
+	var (
+		curMap     = m
+		prefixKeys = append([]string{key}, subKeys[:len(subKeys)-1]...)
+	)
+
+	for _, prefixKey := range prefixKeys {
+		if subMap, _ := curMap[prefixKey].(JsonMap); subMap == nil {
+			return nil, false
 		}
+
+		curMap = curMap[prefixKey].(JsonMap)
 	}
 
+	lastKey := subKeys[len(subKeys)-1]
+	value, ok = curMap[lastKey]
 	return
 }
 
