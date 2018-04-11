@@ -7,6 +7,7 @@ package jsonmap
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -30,6 +31,23 @@ func NewJsonMapFromStruct(v interface{}) JsonMap {
 	x := structs.New(v)
 	x.TagName = "json"
 	return x.Map()
+}
+
+func (m JsonMap) Keys(keySep string) []string {
+	var keys []string
+
+	if keySep == "" {
+		for k := range m {
+			keys = append(keys, k)
+		}
+	} else {
+		for k, _ := range unpackMapXToMapString(m, keySep) {
+			keys = append(keys, k)
+		}
+	}
+
+	sort.Strings(keys)
+	return keys
 }
 
 func (m JsonMap) GetValue(key string, subKeys ...string) (value interface{}, ok bool) {

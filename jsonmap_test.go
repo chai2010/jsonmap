@@ -30,6 +30,14 @@ func TestJsonMap(t *testing.T) {
 
 	Assert(t, m1["/z/zz"].(int) == 3)
 	Assert(t, m1["/z"] == nil)
+
+	keys := m0.Keys("/")
+	Assert(t, len(keys) == 5)
+	Assert(t, keys[0] == "/a")
+	Assert(t, keys[1] == "/b")
+	Assert(t, keys[2] == "/c")
+	Assert(t, keys[3] == "/d")
+	Assert(t, keys[4] == "/z/zz")
 }
 
 func TestJsonMap_fromKV(t *testing.T) {
@@ -37,6 +45,10 @@ func TestJsonMap_fromKV(t *testing.T) {
 }
 
 func TestJsonMap_fromStruct(t *testing.T) {
+	// todo
+}
+
+func TestJsonMap_Keys(t *testing.T) {
 	// todo
 }
 
