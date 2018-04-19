@@ -164,7 +164,12 @@ func (m JsonMap) SetValuesFromKV(values map[string]interface{}, keySep string) {
 	}
 
 	for k, v := range values {
-		key := strings.Split(k, keySep)
+		var key []string
+		for _, v := range strings.Split(k, keySep) {
+			if v != "" {
+				key = append(key, v) // skip empty section
+			}
+		}
 		m.SetValue(v, key[0], key[1:]...)
 	}
 	return
